@@ -5,7 +5,7 @@ Defines the Hotel class and its core behavior
 for the Reservation System A6.2 project.
 """
 
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from typing import Dict
 
 
@@ -26,8 +26,34 @@ class Hotel:
         self.total_rooms = total_rooms
         self.available_rooms = total_rooms
 
-        # Calendar structure: {"YYYY-DOY": rooms_booked}
         self._calendar: Dict[str, int] = {}
+
+    def available_rooms_for_dates(
+        self,
+        start_date: str,
+        end_date: str,
+        rooms_requested: int = 1,
+    ) -> bool:
+        if rooms_requested <= 0:
+            raise ValueError("Rooms requested must be at least 1.")
+
+        start = self._parse_date(start_date)
+        end = self._parse_date(end_date)
+
+        if start > end:
+            raise ValueError("End date must be greater than or equal to start date.")
+
+        current = start
+        while current <= end:
+            key = self._calendar_key(current)
+            booked = self._calendar.get(key, 0)
+
+            if booked + rooms_requested > self.total_rooms:
+                return False
+
+            current += timedelta(days=1)
+
+        return True
 
     def display_information(self) -> dict:
         return {
