@@ -14,6 +14,10 @@ class Hotel:
     """Represents a hotel entity."""
 
     def __init__(self, hotel_id: int, name: str, location: str, total_rooms: int):
+        if not name:
+            raise ValueError("Hotel name cannot be empty.")
+        if not location:
+            raise ValueError("Hotel location cannot be empty.")
         if total_rooms <= 0:
             raise ValueError("No rooms available.")
 
@@ -62,8 +66,13 @@ class Hotel:
 
     def modify_information(self, name: str = None, location: str = None) -> None:
         if name is not None:
+            if not name:
+                raise ValueError("Hotel name cannot be empty.")
             self.name = name
+
         if location is not None:
+            if not location:
+                raise ValueError("Hotel location cannot be empty.")
             self.location = location
 
     def reserve_room(self) -> None:
@@ -123,4 +132,7 @@ def load_hotels_from_file(file_path: str) -> List[Hotel]:
             data = json.load(file)
     except FileNotFoundError:
         return []
+    except json.JSONDecodeError:
+        return []
+
     return [Hotel.from_dict(item) for item in data]
