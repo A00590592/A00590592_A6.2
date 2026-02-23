@@ -1,7 +1,8 @@
 """
 Customer module.
 
-Provides the Customer class and helper functions to persist customers in JSON files.
+Provides the Customer class and helper functions
+to persist customers in JSON files.
 """
 
 # pylint: disable=duplicate-code
@@ -51,7 +52,10 @@ def save_customers_to_file(customers: List[Customer], file_path: str) -> None:
 
 
 def load_customers_from_file(file_path: str) -> List[Customer]:
-    """Load customers from a JSON file. Returns an empty list if the file is missing."""
+    """
+    Load customers from a JSON file.
+    Returns an empty list if the file is missing.
+    """
     try:
         with open(file_path, "r", encoding="utf-8") as file:
             data = json.load(file)

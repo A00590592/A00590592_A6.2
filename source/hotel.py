@@ -15,7 +15,13 @@ from typing import Dict, List
 class Hotel:
     """Represents a hotel entity."""
 
-    def __init__(self, hotel_id: int, name: str, location: str, total_rooms: int):
+    def __init__(
+            self,
+            hotel_id: int,
+            name: str,
+            location: str,
+            total_rooms: int
+            ):
         """Initialize a hotel."""
         if not name:
             raise ValueError("Hotel name cannot be empty.")
@@ -32,12 +38,15 @@ class Hotel:
         self._calendar: Dict[str, int] = {}
 
     def available_rooms_for_dates(
-    self,
-    start_date: str,
-    end_date: str,
-    rooms_requested: int = 1,
+        self,
+        start_date: str,
+        end_date: str,
+        rooms_requested: int = 1,
     ) -> bool:
-        """Return True if there is availability for all days in the inclusive date range."""
+        """
+        Return True if there is availability
+        for all days in the inclusive date range.
+        """
         if rooms_requested <= 0:
             raise ValueError("Rooms requested must be at least 1.")
 
@@ -45,7 +54,9 @@ class Hotel:
         end = self._parse_date(end_date)
 
         if start > end:
-            raise ValueError("End date must be greater than or equal to start date.")
+            raise ValueError(
+                "End date must be greater than or equal to start date."
+                )
 
         current = start
         while current <= end:
@@ -58,11 +69,11 @@ class Hotel:
         return True
 
     def apply_calendar_change(
-    self,
-    start_date: str,
-    end_date: str,
-    rooms: int,
-    sign: int,
+        self,
+        start_date: str,
+        end_date: str,
+        rooms: int,
+        sign: int,
     ) -> None:
         """
         Apply a reservation (+1) or cancellation (-1)
@@ -77,7 +88,9 @@ class Hotel:
         end = self._parse_date(end_date)
 
         if start > end:
-            raise ValueError("End date must be greater than or equal to start date.")
+            raise ValueError(
+                "End date must be greater than or equal to start date."
+                )
 
         current = start
         while current <= end:
@@ -86,7 +99,9 @@ class Hotel:
             new_value = booked + (rooms * sign)
 
             if new_value < 0:
-                raise ValueError("Cancellation exceeds booked rooms for selected dates.")
+                raise ValueError(
+                    "Cancellation exceeds booked rooms for selected dates."
+                    )
 
             if new_value == 0:
                 self._calendar.pop(key, None)
@@ -105,7 +120,11 @@ class Hotel:
             "available_rooms": self.available_rooms,
         }
 
-    def modify_information(self, name: str = None, location: str = None) -> None:
+    def modify_information(
+            self,
+            name: str = None,
+            location: str = None
+            ) -> None:
         """Modify hotel basic information."""
         if name is not None:
             if not name:
@@ -148,7 +167,9 @@ class Hotel:
             location=str(data["location"]),
             total_rooms=int(data["total_rooms"]),
         )
-        hotel.available_rooms = int(data.get("available_rooms", hotel.total_rooms))
+        hotel.available_rooms = int(
+            data.get("available_rooms", hotel.total_rooms)
+            )
         hotel._calendar = dict(data.get("calendar", {}))
         return hotel
 
@@ -175,7 +196,10 @@ def save_hotels_to_file(hotels: List[Hotel], file_path: str) -> None:
 
 
 def load_hotels_from_file(file_path: str) -> List[Hotel]:
-    """Load hotels from a JSON file. Returns an empty list if the file is missing."""
+    """
+    Load hotels from a JSON file.
+    Returns an empty list if the file is missing.
+    """
     try:
         with open(file_path, "r", encoding="utf-8") as file:
             data = json.load(file)

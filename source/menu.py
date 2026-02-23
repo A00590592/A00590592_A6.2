@@ -66,7 +66,10 @@ def find_hotel(hotels: List[Hotel], hotel_id: int) -> Optional[Hotel]:
     return None
 
 
-def find_customer(customers: List[Customer], customer_id: int) -> Optional[Customer]:
+def find_customer(
+        customers: List[Customer],
+        customer_id: int
+        ) -> Optional[Customer]:
     """Find a customer by ID in a list of customers."""
     for customer in customers:
         if customer.customer_id == customer_id:
@@ -232,14 +235,19 @@ def modify_customer(customers: List[Customer]) -> None:
     print("Customer updated.")
 
 
-def delete_customer(customers: List[Customer], reservations: List[Reservation]) -> None:
+def delete_customer(
+        customers: List[Customer],
+        reservations: List[Reservation]
+        ) -> None:
     """Delete a customer if it has no existing reservations."""
     show_cancel_legend()
     customer_id = prompt_int("Customer ID to delete: ")
 
     for reservation in reservations:
         if reservation.customer_id == customer_id:
-            raise ValueError("Cannot delete customer with existing reservations.")
+            raise ValueError(
+                "Cannot delete customer with existing reservations."
+                )
 
     for idx, customer in enumerate(customers):
         if customer.customer_id == customer_id:
@@ -295,7 +303,10 @@ def create_reservation(
     print("Reservation created.")
 
 
-def cancel_reservation(hotels: List[Hotel], reservations: List[Reservation]) -> None:
+def cancel_reservation(
+        hotels: List[Hotel],
+        reservations: List[Reservation]
+        ) -> None:
     """Cancel a reservation and revert the hotel calendar."""
     show_cancel_legend()
     reservation_id = prompt_int("Reservation ID to cancel: ")
@@ -340,7 +351,10 @@ def save_all(
     print("Data saved.")
 
 
-def hotels_menu(hotels: List[Hotel], reservations: List[Reservation]) -> None:
+def hotels_menu(
+        hotels: List[Hotel],
+        reservations: List[Reservation]
+        ) -> None:
     """Show the hotels submenu."""
     while True:
         print("\nHotels Menu")
@@ -382,7 +396,10 @@ def hotels_menu(hotels: List[Hotel], reservations: List[Reservation]) -> None:
             pause()
 
 
-def customers_menu(customers: List[Customer], reservations: List[Reservation]) -> None:
+def customers_menu(
+        customers: List[Customer],
+        reservations: List[Reservation]
+        ) -> None:
     """Show the customers submenu."""
     while True:
         print("\nCustomers Menu")

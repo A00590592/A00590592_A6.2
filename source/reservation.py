@@ -1,7 +1,8 @@
 """
 Reservation module.
 
-Provides the Reservation class and helper functions to persist reservations in JSON files.
+Provides the Reservation class and helper
+functions to persist reservations in JSON files.
 """
 
 # pylint: disable=duplicate-code
@@ -38,7 +39,9 @@ class Reservation:
         self.rooms_reserved = rooms_reserved
 
     def to_dict(self) -> dict:
-        """Return a JSON-serializable representation of the reservation."""
+        """
+        Return a JSON-serializable representation of the reservation.
+        """
         return {
             "reservation_id": self.reservation_id,
             "hotel_id": self.hotel_id,
@@ -61,7 +64,10 @@ class Reservation:
         )
 
 
-def save_reservations_to_file(reservations: List[Reservation], file_path: str) -> None:
+def save_reservations_to_file(
+        reservations: List[Reservation],
+        file_path: str
+        ) -> None:
     """Save a list of reservations to a JSON file."""
     data = [r.to_dict() for r in reservations]
     with open(file_path, "w", encoding="utf-8") as file:
@@ -69,7 +75,10 @@ def save_reservations_to_file(reservations: List[Reservation], file_path: str) -
 
 
 def load_reservations_from_file(file_path: str) -> List[Reservation]:
-    """Load reservations from a JSON file. Returns an empty list if the file is missing."""
+    """
+    Load reservations from a JSON file.
+    Returns an empty list if the file is missing.
+    """
     try:
         with open(file_path, "r", encoding="utf-8") as file:
             data = json.load(file)
