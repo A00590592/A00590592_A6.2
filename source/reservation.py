@@ -1,12 +1,20 @@
 """
 Reservation module.
+
+Provides the Reservation class and helper functions to persist reservations in JSON files.
 """
+
+# pylint: disable=duplicate-code
+
 
 import json
 from typing import List
 
 
 class Reservation:
+    """Represents a reservation entity."""
+
+    # pylint: disable=too-many-arguments, too-many-positional-arguments
     def __init__(
         self,
         reservation_id: int,
@@ -16,6 +24,7 @@ class Reservation:
         end_date: str,
         rooms_reserved: int,
     ):
+        """Initialize a reservation."""
         if rooms_reserved <= 0:
             raise ValueError("Rooms reserved must be at least 1.")
         if not start_date or not end_date:
@@ -29,6 +38,7 @@ class Reservation:
         self.rooms_reserved = rooms_reserved
 
     def to_dict(self) -> dict:
+        """Return a JSON-serializable representation of the reservation."""
         return {
             "reservation_id": self.reservation_id,
             "hotel_id": self.hotel_id,
@@ -40,6 +50,7 @@ class Reservation:
 
     @classmethod
     def from_dict(cls, data: dict) -> "Reservation":
+        """Create a Reservation instance from a dictionary."""
         return cls(
             reservation_id=int(data["reservation_id"]),
             hotel_id=int(data["hotel_id"]),
@@ -51,12 +62,14 @@ class Reservation:
 
 
 def save_reservations_to_file(reservations: List[Reservation], file_path: str) -> None:
+    """Save a list of reservations to a JSON file."""
     data = [r.to_dict() for r in reservations]
     with open(file_path, "w", encoding="utf-8") as file:
         json.dump(data, file, indent=2)
 
 
 def load_reservations_from_file(file_path: str) -> List[Reservation]:
+    """Load reservations from a JSON file. Returns an empty list if the file is missing."""
     try:
         with open(file_path, "r", encoding="utf-8") as file:
             data = json.load(file)

@@ -1,9 +1,29 @@
-from datetime import timedelta
+"""
+CLI menu for the A6.2 Reservation System.
 
-from customer import Customer, load_customers_from_file, save_customers_to_file
-from hotel import Hotel, load_hotels_from_file, save_hotels_to_file
-from reservation import Reservation, load_reservations_from_file, save_reservations_to_file
+Provides a console interface to manage hotels, customers, and reservations.
+"""
 
+# pylint: disable=duplicate-code
+
+
+from typing import List, Optional
+
+from source.customer import (
+    Customer,
+    load_customers_from_file,
+    save_customers_to_file,
+)
+from source.hotel import (
+    Hotel,
+    load_hotels_from_file,
+    save_hotels_to_file,
+)
+from source.reservation import (
+    Reservation,
+    load_reservations_from_file,
+    save_reservations_to_file,
+)
 
 HOTELS_FILE = "hotels.json"
 CUSTOMERS_FILE = "customers.json"
@@ -11,10 +31,11 @@ RESERVATIONS_FILE = "reservations.json"
 
 
 class CancelOperation(Exception):
-    pass
+    """Raised when the user cancels the current operation."""
 
 
 def prompt_input(message: str) -> str:
+    """Prompt a string input. Typing 'cancel' raises CancelOperation."""
     value = input(message).strip()
     if value.lower() == "cancel":
         raise CancelOperation()
@@ -22,50 +43,55 @@ def prompt_input(message: str) -> str:
 
 
 def prompt_int(message: str) -> int:
+    """Prompt an integer input. Typing 'cancel' raises CancelOperation."""
     value = prompt_input(message)
     return int(value)
 
 
 def pause() -> None:
+    """Pause the program until the user presses Enter."""
     input("\nPress Enter to continue...")
 
 
 def show_cancel_legend() -> None:
+    """Show the cancel instruction for the current menu."""
     print("\nType 'cancel' at any time to return to the previous menu.\n")
 
 
-def find_hotel(hotels: list, hotel_id: int):
+def find_hotel(hotels: List[Hotel], hotel_id: int) -> Optional[Hotel]:
+    """Find a hotel by ID in a list of hotels."""
     for hotel in hotels:
         if hotel.hotel_id == hotel_id:
             return hotel
     return None
 
 
-def find_customer(customers: list, customer_id: int):
+def find_customer(customers: List[Customer], customer_id: int) -> Optional[Customer]:
+    """Find a customer by ID in a list of customers."""
     for customer in customers:
         if customer.customer_id == customer_id:
             return customer
     return None
 
 
-def find_reservation(reservations: list, reservation_id: int):
+def find_reservation(
+    reservations: List[Reservation], reservation_id: int
+) -> Optional[Reservation]:
+    """Find a reservation by ID in a list of reservations."""
     for reservation in reservations:
         if reservation.reservation_id == reservation_id:
             return reservation
     return None
 
 
-def create_hotel(hotels: list) -> None:
+def create_hotel(hotels: List[Hotel]) -> None:
+    """Create a new hotel and add it to the hotels list."""
     show_cancel_legend()
     hotel_id = prompt_int("Hotel ID: ")
     name = prompt_input("Name: ")
     location = prompt_input("Location: ")
     total_rooms = prompt_int("Total rooms: ")
 
-    if not name:
-        raise ValueError("Name cannot be empty.")
-    if not location:
-        raise ValueError("Location cannot be empty.")
     if find_hotel(hotels, hotel_id) is not None:
         raise ValueError("Hotel ID already exists.")
 
@@ -73,7 +99,8 @@ def create_hotel(hotels: list) -> None:
     print("Hotel created.")
 
 
-def list_hotels(hotels: list) -> None:
+def list_hotels(hotels: List[Hotel]) -> None:
+    """Print all hotels with basic information."""
     if not hotels:
         print("No hotels found.")
         return
@@ -89,7 +116,8 @@ def list_hotels(hotels: list) -> None:
         )
 
 
-def display_hotel_information(hotels: list) -> None:
+def display_hotel_information(hotels: List[Hotel]) -> None:
+    """Display a single hotel information by ID."""
     show_cancel_legend()
     hotel_id = prompt_int("Hotel ID: ")
     hotel = find_hotel(hotels, hotel_id)
@@ -106,7 +134,8 @@ def display_hotel_information(hotels: list) -> None:
     )
 
 
-def modify_hotel(hotels: list) -> None:
+def modify_hotel(hotels: List[Hotel]) -> None:
+    """Modify hotel information."""
     show_cancel_legend()
     hotel_id = prompt_int("Hotel ID: ")
     hotel = find_hotel(hotels, hotel_id)
@@ -126,12 +155,13 @@ def modify_hotel(hotels: list) -> None:
     print("Hotel updated.")
 
 
-def delete_hotel(hotels: list, reservations: list) -> None:
+def delete_hotel(hotels: List[Hotel], reservations: List[Reservation]) -> None:
+    """Delete a hotel if it has no existing reservations."""
     show_cancel_legend()
     hotel_id = prompt_int("Hotel ID to delete: ")
 
-    for r in reservations:
-        if r.hotel_id == hotel_id:
+    for reservation in reservations:
+        if reservation.hotel_id == hotel_id:
             raise ValueError("Cannot delete hotel with existing reservations.")
 
     for idx, hotel in enumerate(hotels):
@@ -143,7 +173,8 @@ def delete_hotel(hotels: list, reservations: list) -> None:
     raise ValueError("Hotel not found.")
 
 
-def create_customer(customers: list) -> None:
+def create_customer(customers: List[Customer]) -> None:
+    """Create a new customer and add it to the customers list."""
     show_cancel_legend()
     customer_id = prompt_int("Customer ID: ")
     name = prompt_input("Name: ")
@@ -156,7 +187,8 @@ def create_customer(customers: list) -> None:
     print("Customer created.")
 
 
-def list_customers(customers: list) -> None:
+def list_customers(customers: List[Customer]) -> None:
+    """Print all customers."""
     if not customers:
         print("No customers found.")
         return
@@ -165,7 +197,8 @@ def list_customers(customers: list) -> None:
         print(customer.to_dict())
 
 
-def display_customer_information(customers: list) -> None:
+def display_customer_information(customers: List[Customer]) -> None:
+    """Display a single customer information by ID."""
     show_cancel_legend()
     customer_id = prompt_int("Customer ID: ")
     customer = find_customer(customers, customer_id)
@@ -174,7 +207,8 @@ def display_customer_information(customers: list) -> None:
     print(customer.to_dict())
 
 
-def modify_customer(customers: list) -> None:
+def modify_customer(customers: List[Customer]) -> None:
+    """Modify customer information."""
     show_cancel_legend()
     customer_id = prompt_int("Customer ID: ")
     customer = find_customer(customers, customer_id)
@@ -198,12 +232,13 @@ def modify_customer(customers: list) -> None:
     print("Customer updated.")
 
 
-def delete_customer(customers: list, reservations: list) -> None:
+def delete_customer(customers: List[Customer], reservations: List[Reservation]) -> None:
+    """Delete a customer if it has no existing reservations."""
     show_cancel_legend()
     customer_id = prompt_int("Customer ID to delete: ")
 
-    for r in reservations:
-        if r.customer_id == customer_id:
+    for reservation in reservations:
+        if reservation.customer_id == customer_id:
             raise ValueError("Cannot delete customer with existing reservations.")
 
     for idx, customer in enumerate(customers):
@@ -215,31 +250,12 @@ def delete_customer(customers: list, reservations: list) -> None:
     raise ValueError("Customer not found.")
 
 
-def apply_calendar_change(hotel: Hotel, start_date: str, end_date: str, rooms: int, sign: int) -> None:
-    start = Hotel._parse_date(start_date)
-    end = Hotel._parse_date(end_date)
-
-    if start > end:
-        raise ValueError("End date must be greater than or equal to start date.")
-
-    current = start
-    while current <= end:
-        key = Hotel._calendar_key(current)
-        booked = hotel._calendar.get(key, 0)
-        new_value = booked + (rooms * sign)
-
-        if new_value < 0:
-            raise ValueError("Cancellation exceeds booked rooms for selected dates.")
-
-        if new_value == 0:
-            hotel._calendar.pop(key, None)
-        else:
-            hotel._calendar[key] = new_value
-
-        current += timedelta(days=1)
-
-
-def create_reservation(hotels: list, customers: list, reservations: list) -> None:
+def create_reservation(
+    hotels: List[Hotel],
+    customers: List[Customer],
+    reservations: List[Reservation],
+) -> None:
+    """Create a reservation and apply it to the hotel calendar."""
     show_cancel_legend()
     reservation_id = prompt_int("Reservation ID: ")
     if find_reservation(reservations, reservation_id) is not None:
@@ -263,7 +279,7 @@ def create_reservation(hotels: list, customers: list, reservations: list) -> Non
     if not hotel.available_rooms_for_dates(start_date, end_date, rooms):
         raise ValueError("No rooms available for the selected dates.")
 
-    apply_calendar_change(hotel, start_date, end_date, rooms, sign=1)
+    hotel.apply_calendar_change(start_date, end_date, rooms, sign=1)
 
     reservations.append(
         Reservation(
@@ -279,7 +295,8 @@ def create_reservation(hotels: list, customers: list, reservations: list) -> Non
     print("Reservation created.")
 
 
-def cancel_reservation(hotels: list, reservations: list) -> None:
+def cancel_reservation(hotels: List[Hotel], reservations: List[Reservation]) -> None:
+    """Cancel a reservation and revert the hotel calendar."""
     show_cancel_legend()
     reservation_id = prompt_int("Reservation ID to cancel: ")
     reservation = find_reservation(reservations, reservation_id)
@@ -290,8 +307,7 @@ def cancel_reservation(hotels: list, reservations: list) -> None:
     if hotel is None:
         raise ValueError("Hotel not found.")
 
-    apply_calendar_change(
-        hotel,
+    hotel.apply_calendar_change(
         reservation.start_date,
         reservation.end_date,
         reservation.rooms_reserved,
@@ -302,23 +318,30 @@ def cancel_reservation(hotels: list, reservations: list) -> None:
     print("Reservation cancelled.")
 
 
-def list_reservations(reservations: list) -> None:
+def list_reservations(reservations: List[Reservation]) -> None:
+    """Print all reservations."""
     if not reservations:
         print("No reservations found.")
         return
 
-    for r in reservations:
-        print(r.to_dict())
+    for reservation in reservations:
+        print(reservation.to_dict())
 
 
-def save_all(hotels: list, customers: list, reservations: list) -> None:
+def save_all(
+    hotels: List[Hotel],
+    customers: List[Customer],
+    reservations: List[Reservation],
+) -> None:
+    """Save hotels, customers, and reservations to their JSON files."""
     save_hotels_to_file(hotels, HOTELS_FILE)
     save_customers_to_file(customers, CUSTOMERS_FILE)
     save_reservations_to_file(reservations, RESERVATIONS_FILE)
     print("Data saved.")
 
 
-def hotels_menu(hotels: list, reservations: list) -> None:
+def hotels_menu(hotels: List[Hotel], reservations: List[Reservation]) -> None:
+    """Show the hotels submenu."""
     while True:
         print("\nHotels Menu")
         print("1. Create Hotel")
@@ -359,7 +382,8 @@ def hotels_menu(hotels: list, reservations: list) -> None:
             pause()
 
 
-def customers_menu(customers: list, reservations: list) -> None:
+def customers_menu(customers: List[Customer], reservations: List[Reservation]) -> None:
+    """Show the customers submenu."""
     while True:
         print("\nCustomers Menu")
         print("1. Create Customer")
@@ -400,7 +424,12 @@ def customers_menu(customers: list, reservations: list) -> None:
             pause()
 
 
-def reservations_menu(hotels: list, customers: list, reservations: list) -> None:
+def reservations_menu(
+    hotels: List[Hotel],
+    customers: List[Customer],
+    reservations: List[Reservation],
+) -> None:
+    """Show the reservations submenu."""
     while True:
         print("\nReservations Menu")
         print("1. Create a Reservation")
@@ -433,7 +462,8 @@ def reservations_menu(hotels: list, customers: list, reservations: list) -> None
             pause()
 
 
-def main():
+def main() -> None:
+    """Program entry point."""
     hotels = load_hotels_from_file(HOTELS_FILE)
     customers = load_customers_from_file(CUSTOMERS_FILE)
     reservations = load_reservations_from_file(RESERVATIONS_FILE)
