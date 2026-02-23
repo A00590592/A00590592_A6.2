@@ -25,10 +25,7 @@ Contains the Python source code for the hotel management system.
 
 Includes:
 
-customer.py
-hotel.py
-reservation.py
-menu.py
+customer.py | hotel.py | reservation.py | menu.py
 
 The main program (menu.py) must be executed from this directory using the command line.
 
@@ -37,9 +34,7 @@ Contains the unit test files used to validate program behavior.
 
 Includes:
 
-test_customer.py
-test_hotel.py
-test_reservation.py
+test_customer.py | test_hotel.py | test_reservation.py
 
 All test cases are executed using the unittest framework.
 
@@ -52,8 +47,7 @@ Generated JSON persistence files (hotels, customers, reservations)
 pylint/
 Contains the static analysis reports generated using:
 
-pylint
-flake8
+pylint | flake8
 
 ## Program Description
 
